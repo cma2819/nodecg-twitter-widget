@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "activeSeconds": {
+            "type": "integer",
+            "default": 30
+        },
+        "listMaximum": {
+            "type": "integer",
+            "default": 50
+        },
+        "twitter": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "targetWords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "consumerKey": {
+                    "type": "string"
+                },
+                "consumerSecret": {
+                    "type": "string"
+                },
+                "accessTokenKey": {
+                    "type": "string"
+                },
+                "accessTokenSecret": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

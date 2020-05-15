@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "type": "number"
+        },
+        "profileImageUrl": {
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "name": {
+            "type": "string"
+        },
+        "screenName": {
+            "type": "string"
+        },
+        "text": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "id",
+        "profileImageUrl",
+        "name",
+        "screenName",
+        "text"
+    ]
+}
