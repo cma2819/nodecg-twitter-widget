@@ -33,7 +33,27 @@
                 "accessTokenSecret": {
                     "type": "string"
                 }
-            }
-        }
-    }
+			},
+			"required": [
+				"targetWords",
+				"consumerKey",
+				"consumerSecret",
+				"accessTokenKey",
+				"accessTokenSecret"
+			]
+		},
+		"findOption": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"removeRetweet": {
+					"type": "boolean",
+					"default": false
+				}
+			}
+		}
+	},
+	"required": [
+		"twitter"
+	]
 }

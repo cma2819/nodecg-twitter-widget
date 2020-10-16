@@ -1,8 +1,9 @@
 import { NodeCG } from './nodecg';
-import Twitter from 'twitter'
+import Twitter from 'twitter';
 import { Tweet } from '../nodecg/generated/tweet';
+import { FindOption } from './findOption';
 
-export const twitter = (nodecg: NodeCG): void => {
+export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
     const activeSeconds = nodecg.bundleConfig.activeSeconds || 60;
     const maxTweets = nodecg.bundleConfig.listMaximum || 50;
     const logger = new nodecg.Logger(`${nodecg.bundleName}:twitter`);
@@ -44,7 +45,7 @@ export const twitter = (nodecg: NodeCG): void => {
         setTimeout(() => {
             activeTweetRep.value = null;
         }, activeSeconds * 1000)
-    }
+	}
 
     const client = new Twitter({
         'consumer_key': config.consumerKey,
@@ -53,12 +54,19 @@ export const twitter = (nodecg: NodeCG): void => {
         'access_token_secret': config.accessTokenSecret
     });
 
-    const filterTrack = config.targetWords.join(',');
+	const filterTrack = config.targetWords.join(',');
+
+	logger.info(`Tracking with "${filterTrack}"`);
 
     const startStream = (): void => {
         logger.info('Try to connect stream.');
         client.stream('statuses/filter', {track: filterTrack}, (stream) => {
             stream.on('data', (tweet) => {
+
+				if (findOption.removeRetweet && tweet.retweeted_status) {
+					return;
+				}
+
                 addTweet({
                     id: tweet.id,
                     name: tweet.user.name,

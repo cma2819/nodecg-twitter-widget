@@ -1,6 +1,8 @@
+import { findOption } from './findOption';
 import { NodeCG } from './nodecg';
 import { twitter } from './twitter';
 
 export = (nodecg: NodeCG): void => {
-    twitter(nodecg);
+	const option = findOption(nodecg);
+    twitter(nodecg, option);
 }

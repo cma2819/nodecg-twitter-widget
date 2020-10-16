@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var twitter_1 = tslib_1.__importDefault(require("twitter"));
-exports.twitter = function (nodecg) {
+exports.twitter = function (nodecg, findOption) {
     var activeSeconds = nodecg.bundleConfig.activeSeconds || 60;
     var maxTweets = nodecg.bundleConfig.listMaximum || 50;
     var logger = new nodecg.Logger(nodecg.bundleName + ":twitter");
@@ -49,10 +49,14 @@ exports.twitter = function (nodecg) {
         'access_token_secret': config.accessTokenSecret
     });
     var filterTrack = config.targetWords.join(',');
+    logger.info("Tracking with \"" + filterTrack + "\"");
     var startStream = function () {
         logger.info('Try to connect stream.');
         client.stream('statuses/filter', { track: filterTrack }, function (stream) {
             stream.on('data', function (tweet) {
+                if (findOption.removeRetweet && tweet.retweeted_status) {
+                    return;
+                }
                 addTweet({
                     id: tweet.id,
                     name: tweet.user.name,

@@ -8,11 +8,14 @@
 export interface Configschema {
 	activeSeconds?: number;
 	listMaximum?: number;
-	twitter?: {
-		targetWords?: string[];
-		consumerKey?: string;
-		consumerSecret?: string;
-		accessTokenKey?: string;
-		accessTokenSecret?: string;
+	twitter: {
+		targetWords: string[];
+		consumerKey: string;
+		consumerSecret: string;
+		accessTokenKey: string;
+		accessTokenSecret: string;
+	};
+	findOption?: {
+		removeRetweet?: boolean;
 	};
 }
