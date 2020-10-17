@@ -63,10 +63,14 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
         client.stream('statuses/filter', {track: filterTrack}, (stream) => {
             stream.on('data', (tweet) => {
 
+				logger.info(`tracked tweet[${tweet.id}]: ${tweet.text}`);
+
 				if (findOption.removeRetweet && tweet.retweeted_status) {
+					logger.info(`tweet[${tweet.id}] filtered.`)
 					return;
 				}
 
+				logger.info(`tweet[${tweet.id}] added.`)
                 addTweet({
                     id: tweet.id,
                     name: tweet.user.name,

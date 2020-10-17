@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.twitter = void 0;
 var tslib_1 = require("tslib");
 var twitter_1 = tslib_1.__importDefault(require("twitter"));
 exports.twitter = function (nodecg, findOption) {
@@ -54,9 +55,12 @@ exports.twitter = function (nodecg, findOption) {
         logger.info('Try to connect stream.');
         client.stream('statuses/filter', { track: filterTrack }, function (stream) {
             stream.on('data', function (tweet) {
+                logger.info("tracked tweet[" + tweet.id + "]: " + tweet.text);
                 if (findOption.removeRetweet && tweet.retweeted_status) {
+                    logger.info("tweet[" + tweet.id + "] filtered.");
                     return;
                 }
+                logger.info("tweet[" + tweet.id + "] added.");
                 addTweet({
                     id: tweet.id,
                     name: tweet.user.name,
