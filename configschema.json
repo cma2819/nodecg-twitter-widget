@@ -19,19 +19,26 @@
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "default": [
+                        "NodeCG"
+                    ]
                 },
                 "consumerKey": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "<twitter v1 api consumer key>"
                 },
                 "consumerSecret": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "<twitter v1 api consumer secret>"
                 },
                 "accessTokenKey": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "<twitter v1 api access token>"
                 },
                 "accessTokenSecret": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "<twitter v1 api access token secret>"
                 }
 			},
 			"required": [
