@@ -2,16 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitter = void 0;
 var tslib_1 = require("tslib");
-var twitter_1 = tslib_1.__importDefault(require("twitter"));
+var Twitter_1 = require("./lib/Twitter");
 exports.twitter = function (nodecg, findOption) {
     var activeSeconds = nodecg.bundleConfig.activeSeconds || 60;
     var maxTweets = nodecg.bundleConfig.listMaximum || 50;
     var logger = new nodecg.Logger(nodecg.bundleName + ":twitter");
     var config = nodecg.bundleConfig.twitter;
-    if (!config || !config.targetWords || !config.consumerKey || !config.consumerSecret || !config.accessTokenKey || !config.accessTokenSecret) {
+    if (!config || !config.targetWords || !config.consumerKey || !config.consumerSecret) {
         logger.warn('Twitter config is not defined.');
         return;
     }
+    var twitterApi = new Twitter_1.Twitter({
+        consumerKey: config.consumerKey,
+        consumerSecret: config.consumerSecret
+    }, function (err) {
+        logger.error(err);
+    });
     var activeTweetRep = nodecg.Replicant('activeTweet', {
         defaultValue: null
     });
@@ -43,42 +49,45 @@ exports.twitter = function (nodecg, findOption) {
             activeTweetRep.value = null;
         }, activeSeconds * 1000);
     };
-    var client = new twitter_1.default({
-        'consumer_key': config.consumerKey,
-        'consumer_secret': config.consumerSecret,
-        'access_token_key': config.accessTokenKey,
-        'access_token_secret': config.accessTokenSecret
-    });
-    var filterTrack = config.targetWords.join(',');
-    logger.info("Tracking with \"" + filterTrack + "\"");
-    var startStream = function () {
-        logger.info('Try to connect stream.');
-        client.stream('statuses/filter', { track: filterTrack }, function (stream) {
-            stream.on('data', function (tweet) {
-                logger.info("tracked tweet[" + tweet.id + "]: " + tweet.text);
-                if (findOption.removeRetweet && tweet.retweeted_status) {
-                    logger.info("tweet[" + tweet.id + "] filtered.");
-                    return;
-                }
-                logger.info("tweet[" + tweet.id + "] added.");
-                addTweet({
-                    id: tweet.id,
-                    name: tweet.user.name,
-                    screenName: tweet.user.screen_name,
-                    profileImageUrl: tweet.user.profile_image_url_https || tweet.user.profile_image_url || null,
-                    text: tweet.text
-                });
-            });
-            stream.on('error', function (error) {
-                logger.info('Error happened on stream.');
-                logger.error(error);
-                setTimeout(startStream, 5 * 60 * 1000);
-            });
-        });
-    };
+    logger.info("Tracking with \"" + config.targetWords.join(',') + "\"");
+    // const startStream = (): void => {
+    //   logger.info('Try to connect stream.');
+    //   client.stream('statuses/filter', { track: filterTrack }, (stream) => {
+    //     stream.on('data', (tweet) => {
+    //       logger.info(`tracked tweet[${tweet.id}]: ${tweet.text}`);
+    //       if (findOption.removeRetweet && tweet.retweeted_status) {
+    //         logger.info(`tweet[${tweet.id}] filtered.`)
+    //         return;
+    //       }
+    //       logger.info(`tweet[${tweet.id}] added.`)
+    //       addTweet({
+    //         id: tweet.id,
+    //         name: tweet.user.name,
+    //         screenName: tweet.user.screen_name,
+    //         profileImageUrl: tweet.user.profile_image_url_https || tweet.user.profile_image_url || null,
+    //         text: tweet.text
+    //       });
+    //     });
+    //     stream.on('error', (error) => {
+    //       logger.info('Error happened on stream.');
+    //       logger.error(error);
+    //       setTimeout(startStream, 5 * 60 * 1000);
+    //     })
+    //   });
+    // }
     if (activeTweetRep.value) {
         activeTweetRep.value = null;
     }
-    startStream();
+    twitterApi.startStream(config.targetWords, {
+        retweet: !findOption.removeRetweet
+    }, function () {
+        addTweet({
+            id: 123456789,
+            name: 'name',
+            profileImageUrl: 'https://image.example.com',
+            screenName: 'screenName',
+            text: 'tweeeeet.'
+        });
+    });
     nodecg.listenFor('twitter:activate', activateTweet);
 };

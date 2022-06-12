@@ -22,24 +22,18 @@
                     }
                 },
                 "consumerKey": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Twitter API v2 consumer key"
                 },
                 "consumerSecret": {
-                    "type": "string"
-                },
-                "accessTokenKey": {
-                    "type": "string"
-                },
-                "accessTokenSecret": {
-                    "type": "string"
+                    "type": "string",
+                    "default": "Twitter API v2 consumer secret"
                 }
 			},
 			"required": [
 				"targetWords",
 				"consumerKey",
-				"consumerSecret",
-				"accessTokenKey",
-				"accessTokenSecret"
+				"consumerSecret"
 			]
 		},
 		"findOption": {

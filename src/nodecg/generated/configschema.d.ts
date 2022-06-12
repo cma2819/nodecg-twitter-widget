@@ -12,8 +12,6 @@ export interface Configschema {
 		targetWords: string[];
 		consumerKey: string;
 		consumerSecret: string;
-		accessTokenKey: string;
-		accessTokenSecret: string;
 	};
 	findOption?: {
 		removeRetweet?: boolean;

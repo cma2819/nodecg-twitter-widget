@@ -8,5 +8,5 @@ bower_components
 # /extension
 # /graphics
 
-#Web font embed
-src/browser/graphics/_lib/fonts.js
+/cfg
+/db
