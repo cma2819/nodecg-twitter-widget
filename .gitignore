@@ -10,3 +10,6 @@ bower_components
 
 /cfg
 /db
+
+#Web font embed
+src/browser/graphics/_lib/fonts.js

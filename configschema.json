@@ -19,7 +19,10 @@
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "default": [
+                        "NodeCG"
+                    ]
                 },
                 "consumerKey": {
                     "type": "string",
