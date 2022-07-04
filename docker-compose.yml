@@ -1,9 +1,0 @@
-services:
-  nodecg:
-    image: cma2819/nodecg
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./:/nodecg/bundles/nodecg-twitter-widget
-      - ./cfg:/nodecg/cfg
-      - ./db:/nodecg/db

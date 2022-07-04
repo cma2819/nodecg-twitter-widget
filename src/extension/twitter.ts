@@ -8,14 +8,13 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
   const maxTweets = nodecg.bundleConfig.listMaximum || 50;
   const logger = new nodecg.Logger(`${nodecg.bundleName}:twitter`);
   const config = nodecg.bundleConfig.twitter;
-  if (!config || !config.targetWords || !config.consumerKey || !config.consumerSecret) {
+  if (!config || !config.targetWords || !config.bearer) {
     logger.warn('Twitter config is not defined.');
     return;
   }
 
   const twitterApi = new Twitter({
-    consumerKey: config.consumerKey,
-    consumerSecret: config.consumerSecret
+    bearer: config.bearer,
   }, (err) => {
     logger.error(err);
   });
@@ -34,7 +33,7 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
     tweetDataArrayRep.value = [tweet].concat(tweetDataArrayRep.value).slice(0, maxTweets);
   }
 
-  const activateTweet = (id: number): void => {
+  const activateTweet = (id: string): void => {
     if (!tweetDataArrayRep.value || activeTweetRep.value === undefined) {
       return;
     }
@@ -56,35 +55,6 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
 
   logger.info(`Tracking with "${config.targetWords.join(',')}"`);
 
-  // const startStream = (): void => {
-  //   logger.info('Try to connect stream.');
-  //   client.stream('statuses/filter', { track: filterTrack }, (stream) => {
-  //     stream.on('data', (tweet) => {
-
-  //       logger.info(`tracked tweet[${tweet.id}]: ${tweet.text}`);
-
-  //       if (findOption.removeRetweet && tweet.retweeted_status) {
-  //         logger.info(`tweet[${tweet.id}] filtered.`)
-  //         return;
-  //       }
-
-  //       logger.info(`tweet[${tweet.id}] added.`)
-  //       addTweet({
-  //         id: tweet.id,
-  //         name: tweet.user.name,
-  //         screenName: tweet.user.screen_name,
-  //         profileImageUrl: tweet.user.profile_image_url_https || tweet.user.profile_image_url || null,
-  //         text: tweet.text
-  //       });
-  //     });
-  //     stream.on('error', (error) => {
-  //       logger.info('Error happened on stream.');
-  //       logger.error(error);
-  //       setTimeout(startStream, 5 * 60 * 1000);
-  //     })
-  //   });
-  // }
-
   if (activeTweetRep.value) {
     activeTweetRep.value = null;
   }
@@ -94,14 +64,8 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
     {
       retweet: !findOption.removeRetweet
     },
-    () => {
-      addTweet({
-        id: 123456789,
-        name: 'name',
-        profileImageUrl: 'https://image.example.com',
-        screenName: 'screenName',
-        text: 'tweeeeet.'
-      });
+    (tweet) => {
+      addTweet(tweet);
     }
   );
   nodecg.listenFor('twitter:activate', activateTweet);

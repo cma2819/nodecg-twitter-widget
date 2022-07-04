@@ -4,5 +4,5 @@ import { twitter } from './twitter';
 
 export = (nodecg: NodeCG): void => {
 	const option = findOption(nodecg);
-    twitter(nodecg, option);
+  twitter(nodecg, option);
 }

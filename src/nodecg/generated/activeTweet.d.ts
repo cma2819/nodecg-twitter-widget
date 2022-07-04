@@ -6,7 +6,7 @@
  */
 
 export type ActiveTweet = null | {
-	id: number;
+	id: string;
 	profileImageUrl: string | null;
 	name: string;
 	screenName: string;

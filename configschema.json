@@ -24,19 +24,14 @@
                         "NodeCG"
                     ]
                 },
-                "consumerKey": {
+                "bearer": {
                     "type": "string",
-                    "default": "Twitter API v2 consumer key"
-                },
-                "consumerSecret": {
-                    "type": "string",
-                    "default": "Twitter API v2 consumer secret"
+                    "default": "Twitter API Bearer token"
                 }
 			},
 			"required": [
 				"targetWords",
-				"consumerKey",
-				"consumerSecret"
+                "bearer"
 			]
 		},
 		"findOption": {

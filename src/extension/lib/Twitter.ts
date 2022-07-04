@@ -1,85 +1,71 @@
-import needle from 'needle';
-
-const TWITTER_API_V2 = 'https://api.twitter.com/2';
+import Client from 'twitter-api-sdk';
+import { Tweet } from '../../nodecg/generated/tweet';
 
 export type RuleOptions = {
   retweet?: boolean;
 }
 
 export type TwitterCredentials = {
-  consumerKey: string;
-  consumerSecret: string;
+  bearer: string;
 };
-
-type TwitterRule = {
-  value: string;
-  tag?: string;
-};
-
-type TwitterRuleResponses = ({
-  id: string;
-} & TwitterRule)[];
 
 export class Twitter {
 
-  protected bearer?: string;
+  protected twitter: Client;
 
   constructor(protected credentials: TwitterCredentials, protected errorHandler: (err: Error) => void) {
-    needle.post('https://api.twitter.com/oauth2/token?grant_type=client_credentials', {}, {
-      headers: {
-        'Authorization': `Basic ${credentials.consumerKey}:${credentials.consumerSecret}`,
-      },
-    }, (err, response) => {
-      if (err) {
-        this.errorHandler(new Error(`OAuth2 credentials error.\n${err}`));
-        return;
-      }
 
-      console.log(`Basic ${credentials.consumerKey}:${credentials.consumerSecret}`);
-      this.bearer = response.body;
-    });
+    this.twitter = new Client(credentials.bearer);
   }
 
-  private resetRules(): void {
-    console.log(this.bearer);
-    // fetch rules
-    needle.get(`${TWITTER_API_V2}/tweets/search/stream/rules`, {
-      headers: {
-        'Authorization': `Bearer ${this.bearer}`,
-      },
-    }, (err, response) => {
-      if (err) {
-        this.errorHandler(err);
-      }
+  private async resetRules(trackWords: string[], option: RuleOptions): Promise<void> {
+    const rules = await this.twitter.tweets.getRules();
 
-      const rules = response.body.data as TwitterRuleResponses;
-      const ruleIds = rules.map((rule) => rule.id);
+    const ruleIds = rules.data?.map((rule) => rule.id)?.filter((id): id is string => {
+      return !!id;
+    });
 
-      // delete rules
-      needle.post(
-        `${TWITTER_API_V2}/tweets/search/stream/rules`,
-        {
-          delete: { ids: ruleIds }
+    if (ruleIds) {
+      await this.twitter.tweets.addOrDeleteRules({
+        delete: {
+          ids: ruleIds,
         },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.bearer}`,
-          },
-        },
-        (err) => {
-          if (err) {
-            this.errorHandler(err);
-          }
       });
+    }
+
+    const addValues = [`(${trackWords.join(' OR ')})`];
+    if (!option.retweet) {
+      addValues.push('-is:retweet');
+    }
+
+    await this.twitter.tweets.addOrDeleteRules({
+      add: [
+        {
+          value: addValues.join(' '),
+        },
+      ],
     });
+
   }
 
-  startStream(trackWords: string[], option: RuleOptions, onTweet: () => void): void {
-    return;
-    this.resetRules();
-    onTweet();
-    console.log(TWITTER_API_V2);
-    console.log(trackWords);
-    console.log(option);
+  async startStream(trackWords: string[], option: RuleOptions, onTweet: (tweet: Tweet) => void): Promise<void> {
+    this.resetRules(trackWords, option);
+    const searchedStream = this.twitter.tweets.searchStream({
+      'expansions': ['author_id'],
+      'user.fields': ['profile_image_url', 'name', 'username'],
+    });
+    for await (const tweet of searchedStream) {
+      if (!tweet.data || !tweet.includes || !tweet.includes?.users?.[0].profile_image_url) {
+        this.errorHandler(new Error(`Skip add tweet: ${JSON.stringify(tweet)}`));
+        continue;
+      }
+      onTweet({
+        id: tweet.data.id,
+        profileImageUrl: tweet.includes.users[0].profile_image_url,
+        name: tweet.includes.users[0].name,
+        screenName: tweet.includes.users[0].username,
+        text: tweet.data.text,
+      });
+    }
   }
 }
