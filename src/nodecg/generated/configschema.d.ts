@@ -10,10 +10,7 @@ export interface Configschema {
 	listMaximum?: number;
 	twitter: {
 		targetWords: string[];
-		consumerKey: string;
-		consumerSecret: string;
-		accessTokenKey: string;
-		accessTokenSecret: string;
+		bearer: string;
 	};
 	findOption?: {
 		removeRetweet?: boolean;

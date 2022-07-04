@@ -6,7 +6,7 @@
  */
 
 export interface Tweet {
-	id: number;
+	id: string;
 	profileImageUrl: string | null;
 	name: string;
 	screenName: string;

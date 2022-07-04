@@ -1,11 +1,11 @@
-import { Assets } from "./asset";
+import { Assets } from './asset';
 import { ActiveTweet } from './generated/activeTweet';
 import { TweetDataArray } from './generated/tweetDataArray';
 
 type ReplicantMap = {
-    assets: Assets,
-    activeTweet: ActiveTweet,
-    tweetDataArray: TweetDataArray
+    assets: Assets;
+    activeTweet: ActiveTweet;
+    tweetDataArray: TweetDataArray;
 };
 
 type ReplicantName = (
@@ -14,7 +14,7 @@ type ReplicantName = (
 );
 
 export {
-    Assets,
-    ReplicantMap,
-    ReplicantName
+  Assets,
+  ReplicantMap,
+  ReplicantName
 };
