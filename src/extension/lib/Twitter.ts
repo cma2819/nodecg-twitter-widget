@@ -49,7 +49,7 @@ export class Twitter {
   }
 
   async startStream(trackWords: string[], option: RuleOptions, onTweet: (tweet: Tweet) => void): Promise<void> {
-    this.resetRules(trackWords, option);
+    await this.resetRules(trackWords, option);
     const searchedStream = this.twitter.tweets.searchStream({
       'expansions': ['author_id'],
       'user.fields': ['profile_image_url', 'name', 'username'],

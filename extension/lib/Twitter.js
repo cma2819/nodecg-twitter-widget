@@ -37,7 +37,7 @@ class Twitter {
     async startStream(trackWords, option, onTweet) {
         var e_1, _a;
         var _b, _c;
-        this.resetRules(trackWords, option);
+        await this.resetRules(trackWords, option);
         const searchedStream = this.twitter.tweets.searchStream({
             'expansions': ['author_id'],
             'user.fields': ['profile_image_url', 'name', 'username'],
