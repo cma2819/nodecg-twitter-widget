@@ -1,3 +1,4 @@
+import { Logger } from 'ts-nodecg/helper/logger';
 import Client from 'twitter-api-sdk';
 import { Tweet } from '../../nodecg/generated/tweet';
 
@@ -13,7 +14,7 @@ export class Twitter {
 
   protected twitter: Client;
 
-  constructor(protected credentials: TwitterCredentials, protected errorHandler: (err: Error) => void) {
+  constructor(credentials: TwitterCredentials, protected errorHandler: (err: Error) => void, protected logger: Logger) {
 
     this.twitter = new Client(credentials.bearer);
   }
@@ -38,13 +39,17 @@ export class Twitter {
       addValues.push('-is:retweet');
     }
 
-    await this.twitter.tweets.addOrDeleteRules({
+    const addRules = {
       add: [
         {
           value: addValues.join(' '),
         },
       ],
-    });
+    };
+    const resultRules = await this.twitter.tweets.addOrDeleteRules(addRules);
+
+    this.logger.debug(`created rules: ${JSON.stringify(resultRules?.meta?.summary)}`);
+    this.logger.debug(`with payload: ${JSON.stringify(addRules)}`);
 
   }
 

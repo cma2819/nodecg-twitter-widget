@@ -17,7 +17,7 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
     bearer: config.bearer,
   }, (err) => {
     logger.error(err);
-  });
+  }, logger);
 
   const activeTweetRep = nodecg.Replicant('activeTweet', {
     defaultValue: null
