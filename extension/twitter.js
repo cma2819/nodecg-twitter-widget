@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitter = void 0;
 const Twitter_1 = require("./lib/Twitter");
-exports.twitter = (nodecg, findOption) => {
+exports.twitter = async (nodecg, findOption) => {
     const activeSeconds = nodecg.bundleConfig.activeSeconds || 60;
     const maxTweets = nodecg.bundleConfig.listMaximum || 50;
     const logger = new nodecg.Logger(`${nodecg.bundleName}:twitter`);
@@ -52,7 +52,7 @@ exports.twitter = (nodecg, findOption) => {
         activeTweetRep.value = null;
     }
     try {
-        twitterApi.startStream(config.targetWords, {
+        await twitterApi.startStream(config.targetWords, {
             retweet: !findOption.removeRetweet
         }, (tweet) => {
             addTweet(tweet);

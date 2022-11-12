@@ -3,7 +3,7 @@ import { Tweet } from '../nodecg/generated/tweet';
 import { FindOption } from './findOption';
 import { Twitter } from './lib/Twitter';
 
-export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
+export const twitter = async (nodecg: NodeCG, findOption: FindOption): Promise<void> => {
   const activeSeconds = nodecg.bundleConfig.activeSeconds || 60;
   const maxTweets = nodecg.bundleConfig.listMaximum || 50;
   const logger = new nodecg.Logger(`${nodecg.bundleName}:twitter`);
@@ -60,7 +60,7 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
   }
 
   try {
-    twitterApi.startStream(
+    await twitterApi.startStream(
       config.targetWords,
       {
         retweet: !findOption.removeRetweet
