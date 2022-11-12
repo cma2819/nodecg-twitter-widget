@@ -59,14 +59,18 @@ export const twitter = (nodecg: NodeCG, findOption: FindOption): void => {
     activeTweetRep.value = null;
   }
 
-  twitterApi.startStream(
-    config.targetWords,
-    {
-      retweet: !findOption.removeRetweet
-    },
-    (tweet) => {
-      addTweet(tweet);
-    }
-  );
+  try {
+    twitterApi.startStream(
+      config.targetWords,
+      {
+        retweet: !findOption.removeRetweet
+      },
+      (tweet) => {
+        addTweet(tweet);
+      }
+    );
+  } catch (e) {
+    logger.error(e);
+  }
   nodecg.listenFor('twitter:activate', activateTweet);
 }
