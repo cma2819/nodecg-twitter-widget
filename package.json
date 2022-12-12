@@ -87,7 +87,7 @@
     "axios": "^0.27.2",
     "axios-auth-refresh": "^3.3.1",
     "clone": "^2.1.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "font-awesome": "^4.7.0",
     "needle": "^3.0.0",
     "tslib": "^1.14.1",
